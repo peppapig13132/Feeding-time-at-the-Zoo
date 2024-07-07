@@ -20,6 +20,7 @@ function getLeftoverFood(animalsFilePath, foodFilePath) {
 		}
 		foodCount[item]++;
 	}
+  console.log(`Food: ${food.length}`);
   console.log(foodCount);
 
   const animalCount = {};
@@ -29,6 +30,7 @@ function getLeftoverFood(animalsFilePath, foodFilePath) {
 		}
 		animalCount[animal]++;
 	}
+  console.log(`Animals: ${animals.length}`);
   console.log(animalCount);
 
 	// Feed the animals
