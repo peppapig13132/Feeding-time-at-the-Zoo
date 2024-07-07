@@ -20,6 +20,16 @@ function getLeftoverFood(animalsFilePath, foodFilePath) {
 		}
 		foodCount[item]++;
 	}
+  console.log(foodCount);
+
+  const animalCount = {};
+	for (const animal of animals) {
+		if (!animalCount[animal]) {
+			animalCount[animal] = 0;
+		}
+		animalCount[animal]++;
+	}
+  console.log(animalCount);
 
 	// Feed the animals
 	for (const animal of animals) {
