@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const foodMapping = {
+const animalFoodMapping = {
 	cat: 'fish',
 	dog: 'dogfood',
 	tiger: 'deer',
@@ -8,9 +8,23 @@ const foodMapping = {
 	donkey: 'hay',
 };
 
+const foodAnimalMapping = {
+	fish: 'cat',
+	dogfood: 'dog',
+	deer: 'tiger',
+	carrot: 'rabbit',
+	hay: 'donkey',
+};
+
 function getLeftoverFood(animalsFilePath, foodFilePath) {
-	const animals = fs.readFileSync(animalsFilePath, 'utf-8').trim().split('\n');
-	const food = fs.readFileSync(foodFilePath, 'utf-8').trim().split('\n');
+	const animals = fs.readFileSync(animalsFilePath, 'utf-8')
+                  .split('\n')
+                  .map(line => line.trim())
+                  .filter(line => line !== '');
+	const food = fs.readFileSync(foodFilePath, 'utf-8')
+                  .split('\n')
+                  .map(line => line.trim())
+                  .filter(line => line !== '');
 
 	// Initialize a map to keep track of food items
 	const foodCount = {};
@@ -20,8 +34,7 @@ function getLeftoverFood(animalsFilePath, foodFilePath) {
 		}
 		foodCount[item]++;
 	}
-  console.log(`Food: ${food.length}`);
-  console.log(foodCount);
+  console.log(`Food (${food.length}):`, foodCount);
 
   const animalCount = {};
 	for (const animal of animals) {
@@ -30,28 +43,29 @@ function getLeftoverFood(animalsFilePath, foodFilePath) {
 		}
 		animalCount[animal]++;
 	}
-  console.log(`Animals: ${animals.length}`);
-  console.log(animalCount);
+  console.log(`Animals: (${animals.length}):`, animalCount);
 
-	// Feed the animals
-	for (const animal of animals) {
-		const requiredFood = foodMapping[animal];
-		if (foodCount[requiredFood] > 0) {
-			foodCount[requiredFood]--;
-		}
+	// animal array based on food
+	let animalsBasedOnFood = [];
+	for (const item of food) {
+		animalsBasedOnFood.push(foodAnimalMapping[item]);
 	}
 
-	// Collect remaining food items
-	const leftovers = [];
-	for (const [item, count] of Object.entries(foodCount)) {
-		for (let i = 0; i < count; i++) {
-			leftovers.push(item);
+	let remainingAnimalsBasedOnFood = [...animalsBasedOnFood];
+	
+	animals.forEach(item => {
+		let index = remainingAnimalsBasedOnFood.indexOf(item);
+		if (index !== -1) {
+			remainingAnimalsBasedOnFood.splice(index, 1);
 		}
-	}
+	});
 
-	return leftovers.join('-');
+	let remainingFoods = [];
+	remainingAnimalsBasedOnFood.map(item => remainingFoods.push(animalFoodMapping[item]));
+
+	return remainingFoods.join('-');
 }
 
-// Example usage
-const leftoverFoodString = getLeftoverFood('animals.txt', 'food.txt');
-console.log(leftoverFoodString);
+const remainingFoods = getLeftoverFood('animals.txt', 'food.txt');
+console.log('\nResult:');
+console.log(remainingFoods);
